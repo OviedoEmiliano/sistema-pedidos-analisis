@@ -1,0 +1,1 @@
+-- Consultas SQL: cada una con un comentario de qué responde
