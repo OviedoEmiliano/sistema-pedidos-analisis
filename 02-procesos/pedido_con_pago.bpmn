@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs" targetNamespace="http://example.com/bpmn">
+<bpmn:collaboration id="Collab">
+<bpmn:participant id="Participant_Cliente" name="Cliente" processRef="P_Cliente" />
+<bpmn:participant id="Participant_Tienda" name="Tienda" processRef="P_Tienda" />
+<bpmn:participant id="Participant_Pasarela" name="Pasarela de pago" processRef="P_Pasarela" />
+<bpmn:messageFlow id="m0" sourceRef="T_ConfirmarC" targetRef="S_Pedido" />
+<bpmn:messageFlow id="m1" sourceRef="T_SolMedio" targetRef="E_MedioSolic" />
+<bpmn:messageFlow id="m2" sourceRef="T_Ingresar" targetRef="E_MedioRecib" />
+<bpmn:messageFlow id="m3" sourceRef="T_SolCobro" targetRef="S_Cobro" />
+<bpmn:messageFlow id="m4" sourceRef="T_Procesar" targetRef="E_Resp" />
+<bpmn:messageFlow id="m5" sourceRef="End_SinStock" targetRef="Participant_Cliente" />
+<bpmn:messageFlow id="m6" sourceRef="End_Cancelado" targetRef="Participant_Cliente" />
+<bpmn:messageFlow id="m7" sourceRef="T_MailPend" targetRef="Participant_Cliente" />
+</bpmn:collaboration>
+<bpmn:process id="P_Cliente" isExecutable="false">
+<bpmn:startEvent id="Start_C" name="Inicio"><bpmn:outgoing>PC_f0</bpmn:outgoing></bpmn:startEvent>
+<bpmn:userTask id="T_ConfirmarC" name="Confirmar pedido"><bpmn:incoming>PC_f0</bpmn:incoming><bpmn:outgoing>PC_f1</bpmn:outgoing></bpmn:userTask>
+<bpmn:intermediateCatchEvent id="E_MedioSolic" name="Medio de pago solicitado"><bpmn:incoming>PC_f1</bpmn:incoming><bpmn:outgoing>PC_f2</bpmn:outgoing><bpmn:messageEventDefinition /></bpmn:intermediateCatchEvent>
+<bpmn:userTask id="T_Ingresar" name="Ingresar medio de pago"><bpmn:incoming>PC_f2</bpmn:incoming><bpmn:outgoing>PC_f3</bpmn:outgoing></bpmn:userTask>
+<bpmn:endEvent id="End_C" name="Fin"><bpmn:incoming>PC_f3</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="PC_f0" name="" sourceRef="Start_C" targetRef="T_ConfirmarC" />
+<bpmn:sequenceFlow id="PC_f1" name="" sourceRef="T_ConfirmarC" targetRef="E_MedioSolic" />
+<bpmn:sequenceFlow id="PC_f2" name="" sourceRef="E_MedioSolic" targetRef="T_Ingresar" />
+<bpmn:sequenceFlow id="PC_f3" name="" sourceRef="T_Ingresar" targetRef="End_C" />
+</bpmn:process>
+<bpmn:process id="P_Tienda" isExecutable="false">
+<bpmn:laneSet id="LS">
+<bpmn:lane id="Lane_Ventas" name="Ventas"><bpmn:flowNodeRef>S_Pedido</bpmn:flowNodeRef><bpmn:flowNodeRef>T_GuardarPend</bpmn:flowNodeRef><bpmn:flowNodeRef>T_SolMedio</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_Evt</bpmn:flowNodeRef><bpmn:flowNodeRef>Timer</bpmn:flowNodeRef><bpmn:flowNodeRef>E_MedioRecib</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Cancelar</bpmn:flowNodeRef><bpmn:flowNodeRef>End_Cancelado</bpmn:flowNodeRef><bpmn:flowNodeRef>T_SolCobro</bpmn:flowNodeRef><bpmn:flowNodeRef>E_Resp</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Reg</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_Cobro</bpmn:flowNodeRef><bpmn:flowNodeRef>T_MailPend</bpmn:flowNodeRef><bpmn:flowNodeRef>T_ConfEstado</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_Split</bpmn:flowNodeRef><bpmn:flowNodeRef>T_MailFactura</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_Join</bpmn:flowNodeRef><bpmn:flowNodeRef>End_OK</bpmn:flowNodeRef></bpmn:lane>
+<bpmn:lane id="Lane_Almacen" name="Almacén"><bpmn:flowNodeRef>T_Verificar</bpmn:flowNodeRef><bpmn:flowNodeRef>GW_Stock</bpmn:flowNodeRef><bpmn:flowNodeRef>End_SinStock</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Descontar</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Preparar</bpmn:flowNodeRef></bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="S_Pedido" name="Pedido recibido"><bpmn:outgoing>PT_f0</bpmn:outgoing><bpmn:messageEventDefinition /></bpmn:startEvent>
+<bpmn:serviceTask id="T_Verificar" name="Verificar stock de cada ítem"><bpmn:incoming>PT_f0</bpmn:incoming><bpmn:outgoing>PT_f1</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:exclusiveGateway id="GW_Stock" name="¿Hay stock?"><bpmn:incoming>PT_f1</bpmn:incoming><bpmn:outgoing>PT_f2</bpmn:outgoing><bpmn:outgoing>PT_f3</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:endEvent id="End_SinStock" name="Pedido rechazado (sin stock)"><bpmn:incoming>PT_f2</bpmn:incoming><bpmn:messageEventDefinition /></bpmn:endEvent>
+<bpmn:serviceTask id="T_GuardarPend" name="Guardar pedido (pendiente de pago)"><bpmn:incoming>PT_f3</bpmn:incoming><bpmn:outgoing>PT_f4</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:sendTask id="T_SolMedio" name="Solicitar medio de pago"><bpmn:incoming>PT_f4</bpmn:incoming><bpmn:incoming>PT_f15</bpmn:incoming><bpmn:outgoing>PT_f5</bpmn:outgoing></bpmn:sendTask>
+<bpmn:eventBasedGateway id="GW_Evt" name="Espera de respuesta"><bpmn:incoming>PT_f5</bpmn:incoming><bpmn:outgoing>PT_f6</bpmn:outgoing><bpmn:outgoing>PT_f7</bpmn:outgoing></bpmn:eventBasedGateway>
+<bpmn:intermediateCatchEvent id="Timer" name="Pasaron 24 h"><bpmn:incoming>PT_f7</bpmn:incoming><bpmn:outgoing>PT_f8</bpmn:outgoing><bpmn:timerEventDefinition /></bpmn:intermediateCatchEvent>
+<bpmn:intermediateCatchEvent id="E_MedioRecib" name="Medio de pago recibido"><bpmn:incoming>PT_f6</bpmn:incoming><bpmn:outgoing>PT_f10</bpmn:outgoing><bpmn:messageEventDefinition /></bpmn:intermediateCatchEvent>
+<bpmn:serviceTask id="T_Cancelar" name="Cancelar pedido"><bpmn:incoming>PT_f8</bpmn:incoming><bpmn:outgoing>PT_f9</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:endEvent id="End_Cancelado" name="Pedido cancelado"><bpmn:incoming>PT_f9</bpmn:incoming><bpmn:messageEventDefinition /></bpmn:endEvent>
+<bpmn:sendTask id="T_SolCobro" name="Solicitar cobro"><bpmn:incoming>PT_f10</bpmn:incoming><bpmn:outgoing>PT_f11</bpmn:outgoing></bpmn:sendTask>
+<bpmn:intermediateCatchEvent id="E_Resp" name="Respuesta de cobro recibida"><bpmn:incoming>PT_f11</bpmn:incoming><bpmn:outgoing>PT_f12</bpmn:outgoing><bpmn:messageEventDefinition /></bpmn:intermediateCatchEvent>
+<bpmn:serviceTask id="T_Reg" name="Registrar cobro"><bpmn:incoming>PT_f12</bpmn:incoming><bpmn:outgoing>PT_f13</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:exclusiveGateway id="GW_Cobro" name="¿Cobro aprobado?"><bpmn:incoming>PT_f13</bpmn:incoming><bpmn:outgoing>PT_f14</bpmn:outgoing><bpmn:outgoing>PT_f16</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:sendTask id="T_MailPend" name="Enviar mail: pedido sigue pendiente"><bpmn:incoming>PT_f14</bpmn:incoming><bpmn:outgoing>PT_f15</bpmn:outgoing></bpmn:sendTask>
+<bpmn:serviceTask id="T_ConfEstado" name="Confirmar pedido"><bpmn:incoming>PT_f16</bpmn:incoming><bpmn:outgoing>PT_f17</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:parallelGateway id="GW_Split" name=""><bpmn:incoming>PT_f17</bpmn:incoming><bpmn:outgoing>PT_f18</bpmn:outgoing><bpmn:outgoing>PT_f19</bpmn:outgoing></bpmn:parallelGateway>
+<bpmn:serviceTask id="T_MailFactura" name="Enviar mail con factura"><bpmn:incoming>PT_f18</bpmn:incoming><bpmn:outgoing>PT_f21</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="T_Descontar" name="Descontar stock"><bpmn:incoming>PT_f19</bpmn:incoming><bpmn:outgoing>PT_f20</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:manualTask id="T_Preparar" name="Preparar pedido"><bpmn:incoming>PT_f20</bpmn:incoming><bpmn:outgoing>PT_f22</bpmn:outgoing></bpmn:manualTask>
+<bpmn:parallelGateway id="GW_Join" name=""><bpmn:incoming>PT_f21</bpmn:incoming><bpmn:incoming>PT_f22</bpmn:incoming><bpmn:outgoing>PT_f23</bpmn:outgoing></bpmn:parallelGateway>
+<bpmn:endEvent id="End_OK" name="Pedido confirmado"><bpmn:incoming>PT_f23</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="PT_f0" name="" sourceRef="S_Pedido" targetRef="T_Verificar" />
+<bpmn:sequenceFlow id="PT_f1" name="" sourceRef="T_Verificar" targetRef="GW_Stock" />
+<bpmn:sequenceFlow id="PT_f2" name="No" sourceRef="GW_Stock" targetRef="End_SinStock" />
+<bpmn:sequenceFlow id="PT_f3" name="Sí" sourceRef="GW_Stock" targetRef="T_GuardarPend" />
+<bpmn:sequenceFlow id="PT_f4" name="" sourceRef="T_GuardarPend" targetRef="T_SolMedio" />
+<bpmn:sequenceFlow id="PT_f5" name="" sourceRef="T_SolMedio" targetRef="GW_Evt" />
+<bpmn:sequenceFlow id="PT_f6" name="" sourceRef="GW_Evt" targetRef="E_MedioRecib" />
+<bpmn:sequenceFlow id="PT_f7" name="" sourceRef="GW_Evt" targetRef="Timer" />
+<bpmn:sequenceFlow id="PT_f8" name="" sourceRef="Timer" targetRef="T_Cancelar" />
+<bpmn:sequenceFlow id="PT_f9" name="" sourceRef="T_Cancelar" targetRef="End_Cancelado" />
+<bpmn:sequenceFlow id="PT_f10" name="" sourceRef="E_MedioRecib" targetRef="T_SolCobro" />
+<bpmn:sequenceFlow id="PT_f11" name="" sourceRef="T_SolCobro" targetRef="E_Resp" />
+<bpmn:sequenceFlow id="PT_f12" name="" sourceRef="E_Resp" targetRef="T_Reg" />
+<bpmn:sequenceFlow id="PT_f13" name="" sourceRef="T_Reg" targetRef="GW_Cobro" />
+<bpmn:sequenceFlow id="PT_f14" name="No" sourceRef="GW_Cobro" targetRef="T_MailPend" />
+<bpmn:sequenceFlow id="PT_f15" name="Reintento" sourceRef="T_MailPend" targetRef="T_SolMedio" />
+<bpmn:sequenceFlow id="PT_f16" name="Sí" sourceRef="GW_Cobro" targetRef="T_ConfEstado" />
+<bpmn:sequenceFlow id="PT_f17" name="" sourceRef="T_ConfEstado" targetRef="GW_Split" />
+<bpmn:sequenceFlow id="PT_f18" name="" sourceRef="GW_Split" targetRef="T_MailFactura" />
+<bpmn:sequenceFlow id="PT_f19" name="" sourceRef="GW_Split" targetRef="T_Descontar" />
+<bpmn:sequenceFlow id="PT_f20" name="" sourceRef="T_Descontar" targetRef="T_Preparar" />
+<bpmn:sequenceFlow id="PT_f21" name="" sourceRef="T_MailFactura" targetRef="GW_Join" />
+<bpmn:sequenceFlow id="PT_f22" name="" sourceRef="T_Preparar" targetRef="GW_Join" />
+<bpmn:sequenceFlow id="PT_f23" name="" sourceRef="GW_Join" targetRef="End_OK" />
+</bpmn:process>
+<bpmn:process id="P_Pasarela" isExecutable="false">
+<bpmn:startEvent id="S_Cobro" name="Cobro solicitado"><bpmn:outgoing>PP_f0</bpmn:outgoing><bpmn:messageEventDefinition /></bpmn:startEvent>
+<bpmn:serviceTask id="T_Procesar" name="Procesar pago"><bpmn:incoming>PP_f0</bpmn:incoming><bpmn:outgoing>PP_f1</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:endEvent id="End_P" name="Cobro procesado"><bpmn:incoming>PP_f1</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="PP_f0" name="" sourceRef="S_Cobro" targetRef="T_Procesar" />
+<bpmn:sequenceFlow id="PP_f1" name="" sourceRef="T_Procesar" targetRef="End_P" />
+</bpmn:process>
+<bpmndi:BPMNDiagram id="D"><bpmndi:BPMNPlane id="Pl" bpmnElement="Collab">
+<bpmndi:BPMNShape id="Participant_Cliente_di" bpmnElement="Participant_Cliente" isHorizontal="true"><dc:Bounds x="160" y="0" width="2200" height="160" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Participant_Tienda_di" bpmnElement="Participant_Tienda" isHorizontal="true"><dc:Bounds x="160" y="200" width="2200" height="560" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_Ventas_di" bpmnElement="Lane_Ventas" isHorizontal="true"><dc:Bounds x="190" y="200" width="2170" height="320" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_Almacen_di" bpmnElement="Lane_Almacen" isHorizontal="true"><dc:Bounds x="190" y="520" width="2170" height="240" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Participant_Pasarela_di" bpmnElement="Participant_Pasarela" isHorizontal="true"><dc:Bounds x="160" y="800" width="2200" height="180" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Start_C_di" bpmnElement="Start_C"><dc:Bounds x="230" y="62" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_ConfirmarC_di" bpmnElement="T_ConfirmarC"><dc:Bounds x="310" y="40" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="E_MedioSolic_di" bpmnElement="E_MedioSolic"><dc:Bounds x="800" y="62" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Ingresar_di" bpmnElement="T_Ingresar"><dc:Bounds x="940" y="40" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="End_C_di" bpmnElement="End_C"><dc:Bounds x="1100" y="62" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="S_Pedido_di" bpmnElement="S_Pedido"><dc:Bounds x="230" y="362" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Verificar_di" bpmnElement="T_Verificar"><dc:Bounds x="310" y="600" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="GW_Stock_di" bpmnElement="GW_Stock" isMarkerVisible="true"><dc:Bounds x="470" y="615" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="End_SinStock_di" bpmnElement="End_SinStock"><dc:Bounds x="477" y="702" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_GuardarPend_di" bpmnElement="T_GuardarPend"><dc:Bounds x="580" y="340" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_SolMedio_di" bpmnElement="T_SolMedio"><dc:Bounds x="740" y="340" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="GW_Evt_di" bpmnElement="GW_Evt"><dc:Bounds x="900" y="355" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Timer_di" bpmnElement="Timer"><dc:Bounds x="960" y="270" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="E_MedioRecib_di" bpmnElement="E_MedioRecib"><dc:Bounds x="1000" y="362" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Cancelar_di" bpmnElement="T_Cancelar"><dc:Bounds x="1070" y="248" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="End_Cancelado_di" bpmnElement="End_Cancelado"><dc:Bounds x="1220" y="270" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_SolCobro_di" bpmnElement="T_SolCobro"><dc:Bounds x="1090" y="340" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="E_Resp_di" bpmnElement="E_Resp"><dc:Bounds x="1250" y="362" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Reg_di" bpmnElement="T_Reg"><dc:Bounds x="1320" y="340" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="GW_Cobro_di" bpmnElement="GW_Cobro" isMarkerVisible="true"><dc:Bounds x="1470" y="355" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_MailPend_di" bpmnElement="T_MailPend"><dc:Bounds x="1445" y="248" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_ConfEstado_di" bpmnElement="T_ConfEstado"><dc:Bounds x="1580" y="340" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="GW_Split_di" bpmnElement="GW_Split"><dc:Bounds x="1740" y="355" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_MailFactura_di" bpmnElement="T_MailFactura"><dc:Bounds x="1840" y="340" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Descontar_di" bpmnElement="T_Descontar"><dc:Bounds x="1840" y="600" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Preparar_di" bpmnElement="T_Preparar"><dc:Bounds x="1990" y="600" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="GW_Join_di" bpmnElement="GW_Join"><dc:Bounds x="2140" y="355" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="End_OK_di" bpmnElement="End_OK"><dc:Bounds x="2230" y="362" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="S_Cobro_di" bpmnElement="S_Cobro"><dc:Bounds x="1200" y="862" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="T_Procesar_di" bpmnElement="T_Procesar"><dc:Bounds x="1300" y="840" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="End_P_di" bpmnElement="End_P"><dc:Bounds x="1440" y="862" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="PC_f0_di" bpmnElement="PC_f0"><di:waypoint x="266" y="80" /><di:waypoint x="310" y="80" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PC_f1_di" bpmnElement="PC_f1"><di:waypoint x="410" y="80" /><di:waypoint x="800" y="80" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PC_f2_di" bpmnElement="PC_f2"><di:waypoint x="836" y="80" /><di:waypoint x="940" y="80" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PC_f3_di" bpmnElement="PC_f3"><di:waypoint x="1040" y="80" /><di:waypoint x="1100" y="80" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f0_di" bpmnElement="PT_f0"><di:waypoint x="248" y="398" /><di:waypoint x="248" y="640" /><di:waypoint x="310" y="640" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f1_di" bpmnElement="PT_f1"><di:waypoint x="410" y="640" /><di:waypoint x="470" y="640" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f2_di" bpmnElement="PT_f2"><di:waypoint x="495" y="665" /><di:waypoint x="495" y="702" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f3_di" bpmnElement="PT_f3"><di:waypoint x="520" y="640" /><di:waypoint x="630" y="640" /><di:waypoint x="630" y="420" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f4_di" bpmnElement="PT_f4"><di:waypoint x="680" y="380" /><di:waypoint x="740" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f5_di" bpmnElement="PT_f5"><di:waypoint x="840" y="380" /><di:waypoint x="900" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f6_di" bpmnElement="PT_f6"><di:waypoint x="950" y="380" /><di:waypoint x="1000" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f7_di" bpmnElement="PT_f7"><di:waypoint x="925" y="355" /><di:waypoint x="925" y="288" /><di:waypoint x="960" y="288" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f8_di" bpmnElement="PT_f8"><di:waypoint x="996" y="288" /><di:waypoint x="1070" y="288" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f9_di" bpmnElement="PT_f9"><di:waypoint x="1170" y="288" /><di:waypoint x="1220" y="288" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f10_di" bpmnElement="PT_f10"><di:waypoint x="1036" y="380" /><di:waypoint x="1090" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f11_di" bpmnElement="PT_f11"><di:waypoint x="1190" y="380" /><di:waypoint x="1250" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f12_di" bpmnElement="PT_f12"><di:waypoint x="1286" y="380" /><di:waypoint x="1320" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f13_di" bpmnElement="PT_f13"><di:waypoint x="1420" y="380" /><di:waypoint x="1470" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f14_di" bpmnElement="PT_f14"><di:waypoint x="1495" y="355" /><di:waypoint x="1495" y="328" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f15_di" bpmnElement="PT_f15"><di:waypoint x="1495" y="248" /><di:waypoint x="1495" y="222" /><di:waypoint x="765" y="222" /><di:waypoint x="765" y="340" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f16_di" bpmnElement="PT_f16"><di:waypoint x="1520" y="380" /><di:waypoint x="1580" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f17_di" bpmnElement="PT_f17"><di:waypoint x="1680" y="380" /><di:waypoint x="1740" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f18_di" bpmnElement="PT_f18"><di:waypoint x="1790" y="380" /><di:waypoint x="1840" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f19_di" bpmnElement="PT_f19"><di:waypoint x="1765" y="405" /><di:waypoint x="1765" y="640" /><di:waypoint x="1840" y="640" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f20_di" bpmnElement="PT_f20"><di:waypoint x="1940" y="640" /><di:waypoint x="1990" y="640" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f21_di" bpmnElement="PT_f21"><di:waypoint x="1940" y="380" /><di:waypoint x="2140" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f22_di" bpmnElement="PT_f22"><di:waypoint x="2090" y="640" /><di:waypoint x="2165" y="640" /><di:waypoint x="2165" y="405" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PT_f23_di" bpmnElement="PT_f23"><di:waypoint x="2190" y="380" /><di:waypoint x="2230" y="380" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PP_f0_di" bpmnElement="PP_f0"><di:waypoint x="1236" y="880" /><di:waypoint x="1300" y="880" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="PP_f1_di" bpmnElement="PP_f1"><di:waypoint x="1400" y="880" /><di:waypoint x="1440" y="880" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m0_di" bpmnElement="m0"><di:waypoint x="340" y="120" /><di:waypoint x="340" y="340" /><di:waypoint x="248" y="340" /><di:waypoint x="248" y="362" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m1_di" bpmnElement="m1"><di:waypoint x="818" y="340" /><di:waypoint x="818" y="98" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m2_di" bpmnElement="m2"><di:waypoint x="1018" y="120" /><di:waypoint x="1018" y="362" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m3_di" bpmnElement="m3"><di:waypoint x="1140" y="420" /><di:waypoint x="1140" y="830" /><di:waypoint x="1218" y="830" /><di:waypoint x="1218" y="862" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m4_di" bpmnElement="m4"><di:waypoint x="1320" y="840" /><di:waypoint x="1320" y="790" /><di:waypoint x="1268" y="790" /><di:waypoint x="1268" y="398" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m5_di" bpmnElement="m5"><di:waypoint x="477" y="720" /><di:waypoint x="130" y="720" /><di:waypoint x="130" y="80" /><di:waypoint x="160" y="80" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m6_di" bpmnElement="m6"><di:waypoint x="1238" y="270" /><di:waypoint x="1238" y="160" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="m7_di" bpmnElement="m7"><di:waypoint x="1545" y="288" /><di:waypoint x="1600" y="288" /><di:waypoint x="1600" y="160" /></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>
