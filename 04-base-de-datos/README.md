@@ -4,9 +4,9 @@
 
 Modelo de la tienda: clientes, pedidos, detalle de pedidos, ítems, cobros y estados.
 
-![Modelo entidad-relación](er.svg)
+![Modelo entidad-relación](der_pedidos.svg)
 
-Fuente editable: [er.drawio](../fuentes/er.drawio)
+Fuente editable: [er.drawio](../fuentes/der_pedidos.drawio)
 
 ## Decisiones de modelado
 

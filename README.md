@@ -11,7 +11,7 @@ El foco está en **analizar y documentar antes de programar**.
 |---|---|---|
 | [01-requerimientos](01-requerimientos) | Requerimientos funcionales y no funcionales, historias de usuario con criterios de aceptación, caso de uso textual | ⏳ |
 | [02-procesos](02-procesos) | Diagrama de flujo y BPMN del proceso "Realizar pedido con pago" | ✅ BPMN  
-| [03-uml](03-uml) | Casos de uso, diagrama de secuencia (BCE) y diagrama de clases | ✅ 
+| [03-uml](03-uml) | Casos de uso, diagrama de secuencia (BCE) | ✅ CU, Diagrama de Secuencia
 | [04-base-de-datos](04-base-de-datos) | Modelo entidad-relación, script de tablas y consultas SQL comentadas | ✅ ER, ⏳ schema y consultas |
 | [05-api](05-api) | Diseño de endpoints REST y colección de Postman | ⏳ |
 | [06-gestion-agil](06-gestion-agil) | Backlog y sprint en Jira, documentación en Confluence (capturas) | ⏳ |
