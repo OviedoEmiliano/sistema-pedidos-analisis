@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="O7UlFy-1TFvfM7belGPq" name="Diagrama Entidad-Relacion">
-    <mxGraphModel dx="2214" dy="1589" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1978" dy="1458" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -178,8 +178,8 @@
             <mxRectangle height="30" width="150" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="hrX3LLYX2l7SoIBML8DW-61" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;" value="1..n" vertex="1">
-          <mxGeometry height="18" width="16" x="420" y="-79" as="geometry" />
+        <mxCell id="hrX3LLYX2l7SoIBML8DW-61" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;" value="0..n" vertex="1">
+          <mxGeometry height="18" width="16" x="415" y="-73" as="geometry" />
         </mxCell>
         <mxCell id="hrX3LLYX2l7SoIBML8DW-62" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;" value="1" vertex="1">
           <mxGeometry height="18" width="16" x="424" y="-176" as="geometry" />
@@ -190,7 +190,7 @@
         <mxCell id="hrX3LLYX2l7SoIBML8DW-64" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;" value="1" vertex="1">
           <mxGeometry height="18" width="16" x="335" y="32" as="geometry" />
         </mxCell>
-        <mxCell id="hrX3LLYX2l7SoIBML8DW-65" edge="1" parent="1" source="hrX3LLYX2l7SoIBML8DW-35" style="edgeStyle=none;curved=1;rounded=0;curveGeometry=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0.941;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=12;defaultLabelBackgroundColor=page;startSize=8;endSize=8;startArrow=ERoneToMany;startFill=0;endArrow=none;endFill=0;" target="hrX3LLYX2l7SoIBML8DW-54">
+        <mxCell id="hrX3LLYX2l7SoIBML8DW-65" edge="1" parent="1" source="hrX3LLYX2l7SoIBML8DW-35" style="edgeStyle=none;curved=1;rounded=0;curveGeometry=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0.941;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=12;defaultLabelBackgroundColor=page;startSize=8;endSize=8;startArrow=ERzeroToMany;startFill=0;endArrow=none;endFill=0;" target="hrX3LLYX2l7SoIBML8DW-54">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="hrX3LLYX2l7SoIBML8DW-66" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="addresses" vertex="1">

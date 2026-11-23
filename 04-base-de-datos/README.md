@@ -51,23 +51,22 @@ Requisito: PostgreSQL 16 (el script usa columnas `IDENTITY`, triggers en PL/pgSQ
 **1. Crear la base de datos**
 
 ```bash
-psql -U postgres -c "CREATE DATABASE tienda;"
+psql -U postgres -c "CREATE DATABASE pedidos;"
 ```
 
 **2. Cargar el esquema y los datos, en este orden**
 
 ```bash
-psql -U postgres -d tienda -f schema.sql
-psql -U postgres -d tienda -f seed.sql
+psql -U postgres -d pedidos -f schema.sql
+psql -U postgres -d pedidos -f seed.sql
 ```
 
 **3. Ejecutar las consultas**
 
 ```bash
-psql -U postgres -d tienda -f consultas.sql
+psql -U postgres -d pedidos -f consultas.sql
 ```
-
-Si preferís una interfaz gráfica (pgAdmin, DataGrip), creá la base `tienda`, abrí cada archivo en el editor de consultas y ejecutalo en el mismo orden. Para las consultas, ejecutá de a una, ya que muchos clientes muestran solo el resultado de la última sentencia.
+Si preferís una interfaz gráfica (pgAdmin, DataGrip), creá la base `pedidos`, abrí cada archivo en el editor de consultas y ejecutalo en el mismo orden. Para las consultas, ejecutá de a una, ya que muchos clientes muestran solo el resultado de la última sentencia.
 
 **Para empezar de cero**
 
