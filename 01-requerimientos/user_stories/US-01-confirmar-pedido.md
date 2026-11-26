@@ -14,7 +14,7 @@
 
 ## Historia
 
-Como **cliente** quiero **confirmar mi pedido** para **dejar registrado mi compra y poder pagarla.**.
+Como **cliente** quiero **confirmar mi pedido** para **dejar registrado mi compra y poder pagarla.**
 
 ## Criterios de aceptación
 
